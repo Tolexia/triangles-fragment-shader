@@ -86,10 +86,10 @@ gui
  * Material
  */
 const materialParameters = {}
-materialParameters.uColor_a = new THREE.Color(new THREE.Vector3(0.5))
-materialParameters.uColor_b = new THREE.Color(new THREE.Vector3(0.5))
-materialParameters.uColor_c = new THREE.Color(new THREE.Vector3(0.8, 0.45, 0.45))
-materialParameters.uColor_d = new THREE.Color(new THREE.Vector3(0.65, 0.15, 0.15))
+materialParameters.uColor_a = new THREE.Color("#d81818")
+materialParameters.uColor_b = new THREE.Color("#d09816")
+materialParameters.uColor_c = new THREE.Color("#ffffff")
+materialParameters.uColor_d = new THREE.Color("#ffffff")
 
 
 const material = new THREE.ShaderMaterial({
@@ -138,23 +138,56 @@ gui
  * Objects
  */
 // Plane
-const Plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(5,5, 50,50),
-    material
-)
-Plane.rotateX(- Math.PI / 2)
+// const Plane = new THREE.Mesh(
+//     new THREE.PlaneGeometry(5,5, 50,50),
+//     material
+// )
+// Plane.rotateX(- Math.PI / 2)
 
-scene.add(Plane)
+// scene.add(Plane)
+
+let fox = null
+let mixer = null
+gltfLoader.load(
+    './scene.gltf',
+    (gltf) =>
+    {
+        fox = gltf.scene
+        fox.scale.set(0.025, 0.025, 0.025)
+        fox.rotation.set(-Math.PI/4, -Math.PI/2,-Math.PI/5)
+        fox.position.set(0,-1,0)
+        fox.traverse((child) =>
+        {
+            if(child.isMesh)
+                child.material = material
+        })
+        scene.add(fox)
+
+        mixer = new THREE.AnimationMixer(fox)
+        const stay = mixer.clipAction(gltf.animations[0])
+        stay.play()
+
+        const walk = mixer.clipAction(gltf.animations[1])
+        const run = mixer.clipAction(gltf.animations[2])
+
+        fox.stay = stay
+        fox.walk = walk
+        fox.run = run
+    }
+)
 
 
 /**
  * Animate
  */
 const clock = new THREE.Clock()
+let previousTime = 0
 
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
 
     material.uniforms.iTime.value = elapsedTime
     // Update controls
@@ -162,6 +195,12 @@ const tick = () =>
 
     // Render
     renderer.render(scene, camera)
+
+    if(mixer)
+    {
+        mixer.update(deltaTime)
+    }
+    
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)

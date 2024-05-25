@@ -3,7 +3,7 @@ uniform vec3 uColor_b;
 uniform vec3 uColor_c;
 uniform vec3 uColor_d;
 
-
+varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
 
@@ -234,11 +234,14 @@ void tri_color(in vec2 p,
 //////////////////////////////////////////////////////////////////////
 
 void main() {
+
+    vec3 viewDirection = normalize(vPosition - cameraPosition);
+    vec3 normal = normalize(vNormal);
 	
     float scl = 4.1 / iResolution.y;
     
-    // get 2D scene coords
-    vec2 p = (gl_FragCoord.xy - 0.5 - 0.5*iResolution.xy) * scl;
+    // get 2D mesh coords
+    vec2 p = (vUv.xy) * 30.;
     
     // get triangular base coords
     vec2 tfloor = floor(cart2tri * p + 0.5);
@@ -277,5 +280,8 @@ void main() {
     
     // final pixel color
     gl_FragColor = cw / cw.w * 2.;
+
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
     
 }
