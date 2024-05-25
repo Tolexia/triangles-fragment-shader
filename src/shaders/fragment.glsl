@@ -1,9 +1,8 @@
-uniform vec3 uColor;
-uniform vec3 uLightColor;
-uniform vec3 uShadowColor;
-uniform vec2 uResolution;
-uniform float uShadowRepetitions;
-uniform float uLightRepetitions;
+uniform vec3 uColor_a;
+uniform vec3 uColor_b;
+uniform vec3 uColor_c;
+uniform vec3 uColor_d;
+
 
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -32,10 +31,19 @@ const mat2 cart2tri = mat2(1.0, 0.0, i3, 2.0*i3);
 
 vec3 pal( in float t ) {
     
-    const vec3 a = vec3(0.5);
-    const vec3 b = vec3(0.5);
-    const vec3 c = vec3(0.8, 0.8, 0.5);
-    const vec3 d = vec3(0, 0.2, 0.5);
+    // const vec3 a = vec3(0.5);
+    // const vec3 b = vec3(0.5);
+    // const vec3 c = vec3(0.8, 0.8, 0.5);
+    // const vec3 d = vec3(0, 0.2, 0.5);
+
+    //  const vec3 c = vec3(1, 1., 1.);  // Black And White
+    // const vec3 d = vec3(1, 1., 1.);  // Black And White
+
+    // Red shades
+    vec3 a = uColor_a;
+    vec3 b = uColor_b;
+    vec3 c = uColor_c;
+    vec3 d = uColor_d;
     
     return clamp(a + b*cos( 6.28318*(c*t+d) ), 0.0, 1.0);
     
@@ -210,7 +218,7 @@ void tri_color(in vec2 p,
         float h = dot(h_tri, b);
 
         // color lookup
-        vec3 c = pal(h);
+        vec3 c = pal(h) / 1.5;
         
         // weight for anti-aliasing is 0.5 at border, 0 just outside,
         // 1 just inside

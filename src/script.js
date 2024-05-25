@@ -86,9 +86,11 @@ gui
  * Material
  */
 const materialParameters = {}
-materialParameters.color = '#ff794d'
-materialParameters.shadowColor = '#8e19b8'
-materialParameters.lightColor = '#e5ffe0'
+materialParameters.uColor_a = new THREE.Color(new THREE.Vector3(0.5))
+materialParameters.uColor_b = new THREE.Color(new THREE.Vector3(0.5))
+materialParameters.uColor_c = new THREE.Color(new THREE.Vector3(0.8, 0.45, 0.45))
+materialParameters.uColor_d = new THREE.Color(new THREE.Vector3(0.65, 0.15, 0.15))
+
 
 const material = new THREE.ShaderMaterial({
     vertexShader,
@@ -99,39 +101,38 @@ const material = new THREE.ShaderMaterial({
         iTime: new THREE.Uniform(0),
         iTimeDelta: new THREE.Uniform(0),
         iFrame: new THREE.Uniform(0),
+        uColor_a: new THREE.Uniform(materialParameters.uColor_a),
+        uColor_b: new THREE.Uniform(materialParameters.uColor_b),
+        uColor_c: new THREE.Uniform(materialParameters.uColor_c),
+        uColor_d: new THREE.Uniform(materialParameters.uColor_d),
     }
 })
 
-// gui
-//     .addColor(materialParameters, 'color')
-//     .onChange(() =>
-//     {
-//         material.uniforms.uColor.value.set(materialParameters.color)
-//     })
+gui
+    .addColor(materialParameters, 'uColor_a')
+    .onChange(() =>
+    {
+        material.uniforms.uColor_a.value.set(materialParameters.uColor_a)
+    })
+gui
+    .addColor(materialParameters, 'uColor_b')
+    .onChange(() =>
+    {
+        material.uniforms.uColor_b.value.set(materialParameters.uColor_b)
+    })
+gui
+    .addColor(materialParameters, 'uColor_c')
+    .onChange(() =>
+    {
+        material.uniforms.uColor_c.value.set(materialParameters.uColor_c)
+    })
+gui
+    .addColor(materialParameters, 'uColor_d')
+    .onChange(() =>
+    {
+        material.uniforms.uColor_d.value.set(materialParameters.uColor_d)
+    })
 
-// gui
-//     .add(material.uniforms.uShadowRepetitions, 'value')
-//     .min(1)
-//     .max(300)
-//     .step(1)
-// gui
-//     .add(material.uniforms.uLightRepetitions, 'value')
-//     .min(1)
-//     .max(300)
-//     .step(1)
-
-// gui
-//     .addColor(materialParameters, 'shadowColor')
-//     .onChange(() =>
-//     {
-//         material.uniforms.uShadowColor.value.set(materialParameters.shadowColor)
-//     })
-// gui
-//     .addColor(materialParameters, 'lightColor')
-//     .onChange(() =>
-//     {
-//         material.uniforms.uLightColor.value.set(materialParameters.lightColor)
-//     })
 
 /**
  * Objects
@@ -155,7 +156,7 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    // material.uniforms.iTime.value = elapsedTime
+    material.uniforms.iTime.value = elapsedTime
     // Update controls
     controls.update()
 
