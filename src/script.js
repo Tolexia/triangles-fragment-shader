@@ -4,6 +4,7 @@ import GUI from 'lil-gui'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
+import gsap from 'gsap'
 
 /**
  * Base
@@ -91,7 +92,6 @@ materialParameters.uColor_b = new THREE.Color("#d09816")
 materialParameters.uColor_c = new THREE.Color("#ffffff")
 materialParameters.uColor_d = new THREE.Color("#ffffff")
 
-
 const material = new THREE.ShaderMaterial({
     vertexShader,
     fragmentShader,
@@ -101,12 +101,16 @@ const material = new THREE.ShaderMaterial({
         iTime: new THREE.Uniform(0),
         iTimeDelta: new THREE.Uniform(0),
         iFrame: new THREE.Uniform(0),
+        uTriangleMultiplier: new THREE.Uniform(50),
         uColor_a: new THREE.Uniform(materialParameters.uColor_a),
         uColor_b: new THREE.Uniform(materialParameters.uColor_b),
         uColor_c: new THREE.Uniform(materialParameters.uColor_c),
         uColor_d: new THREE.Uniform(materialParameters.uColor_d),
     }
 })
+
+gui
+    .add(material.uniforms.uTriangleMultiplier, 'value').min(1).max(100).step(1)
 
 gui
     .addColor(materialParameters, 'uColor_a')
@@ -163,18 +167,35 @@ gltfLoader.load(
         })
         scene.add(fox)
 
-        mixer = new THREE.AnimationMixer(fox)
-        const stay = mixer.clipAction(gltf.animations[0])
-        stay.play()
+        // mixer = new THREE.AnimationMixer(fox)
+        // const stay = mixer.clipAction(gltf.animations[0])
+        // stay.play()
 
-        const walk = mixer.clipAction(gltf.animations[1])
-        const run = mixer.clipAction(gltf.animations[2])
+        // const walk = mixer.clipAction(gltf.animations[1])
+        // const run = mixer.clipAction(gltf.animations[2])
 
-        fox.stay = stay
-        fox.walk = walk
-        fox.run = run
+        // fox.stay = stay
+        // fox.walk = walk
+        // fox.run = run
     }
 )
+
+// scene.add(new THREE.AmbientLight(0xffffff, 2))
+
+let is_initModel = false;
+const initModel = function()
+{
+    if(!fox || is_initModel) return;
+
+    gsap.to(material.uniforms.uTriangleMultiplier, 
+        { value: 60,
+             duration: 3,
+             ease:'sine.out' }
+    )
+    console.log("init")
+    is_initModel = true
+}
+
 
 
 /**
@@ -198,7 +219,11 @@ const tick = () =>
 
     if(mixer)
     {
-        mixer.update(deltaTime)
+        // mixer.update(deltaTime)
+    }
+    if(fox)
+    {
+        initModel()
     }
     
 

@@ -2,6 +2,7 @@ uniform vec3 uColor_a;
 uniform vec3 uColor_b;
 uniform vec3 uColor_c;
 uniform vec3 uColor_d;
+uniform float uTriangleMultiplier;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -241,7 +242,7 @@ void main() {
     float scl = 4.1 / iResolution.y;
     
     // get 2D mesh coords
-    vec2 p = (vUv.xy) * 30.;
+    vec2 p = (vUv.xy) * uTriangleMultiplier;
     
     // get triangular base coords
     vec2 tfloor = floor(cart2tri * p + 0.5);
