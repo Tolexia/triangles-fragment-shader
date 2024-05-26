@@ -1,7 +1,7 @@
 uniform vec3 uColor_a;
 uniform vec3 uColor_b;
 uniform vec3 uColor_c;
-uniform vec3 uColor_d;
+uniform float uColor_adjuster;
 uniform float uTriangleMultiplier;
 
 varying vec2 vUv;
@@ -44,7 +44,7 @@ vec3 pal( in float t ) {
     vec3 a = uColor_a;
     vec3 b = uColor_b;
     vec3 c = uColor_c;
-    vec3 d = uColor_d;
+    vec3 d = vec3(uColor_adjuster);
     
     return clamp(a + b*cos( 6.28318*(c*t+d) ), 0.0, 1.0);
     

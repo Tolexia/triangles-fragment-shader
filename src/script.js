@@ -90,7 +90,6 @@ const materialParameters = {}
 materialParameters.uColor_a = new THREE.Color("#d81818")
 materialParameters.uColor_b = new THREE.Color("#d09816")
 materialParameters.uColor_c = new THREE.Color("#ffffff")
-materialParameters.uColor_d = new THREE.Color("#ffffff")
 
 const material = new THREE.ShaderMaterial({
     vertexShader,
@@ -105,12 +104,14 @@ const material = new THREE.ShaderMaterial({
         uColor_a: new THREE.Uniform(materialParameters.uColor_a),
         uColor_b: new THREE.Uniform(materialParameters.uColor_b),
         uColor_c: new THREE.Uniform(materialParameters.uColor_c),
-        uColor_d: new THREE.Uniform(materialParameters.uColor_d),
+        uColor_adjuster: new THREE.Uniform(0),
     }
 })
 
 gui
     .add(material.uniforms.uTriangleMultiplier, 'value').min(1).max(100).step(1)
+gui
+    .add(material.uniforms.uColor_adjuster, 'value').min(0).max(1).step(0.01)
 
 gui
     .addColor(materialParameters, 'uColor_a')
@@ -129,12 +130,6 @@ gui
     .onChange(() =>
     {
         material.uniforms.uColor_c.value.set(materialParameters.uColor_c)
-    })
-gui
-    .addColor(materialParameters, 'uColor_d')
-    .onChange(() =>
-    {
-        material.uniforms.uColor_d.value.set(materialParameters.uColor_d)
     })
 
 
@@ -158,8 +153,8 @@ gltfLoader.load(
     {
         fox = gltf.scene
         fox.scale.set(0.025, 0.025, 0.025)
-        fox.rotation.set(-Math.PI/4, -Math.PI/2,-Math.PI/5)
-        fox.position.set(0,-1,0)
+        fox.rotation.set(-Math.PI/5, -Math.PI/2,Math.PI/18)
+        fox.position.set(0,-1.5,0)
         fox.traverse((child) =>
         {
             if(child.isMesh)
@@ -187,11 +182,21 @@ const initModel = function()
 {
     if(!fox || is_initModel) return;
 
-    gsap.to(material.uniforms.uTriangleMultiplier, 
-        { value: 60,
-             duration: 3,
-             ease:'sine.out' }
-    )
+    // gsap.to(material.uniforms.uTriangleMultiplier, 
+    //     { value: 60,
+    //          duration: 10,
+    //          ease:'sine.out' ,
+    //          onComplete: () => {
+               
+    //         }
+    //     }
+    // )
+    // gsap.to(material.uniforms.uColor_adjuster, 
+    //     { value: 1,
+    //          duration: 10,
+    //          ease: 'power1.inOut' ,
+    //     }
+    // )
     console.log("init")
     is_initModel = true
 }
@@ -211,6 +216,7 @@ const tick = () =>
     previousTime = elapsedTime
 
     material.uniforms.iTime.value = elapsedTime
+    material.uniforms.uColor_adjuster.value = Math.sin(elapsedTime * 0.35) * 0.5 + 0.5
     // Update controls
     controls.update()
 
