@@ -153,7 +153,7 @@ gltfLoader.load(
     {
         fox = gltf.scene
         fox.scale.set(0.025, 0.025, 0.025)
-        fox.rotation.set(-Math.PI/5, -Math.PI/2,Math.PI/18)
+        fox.rotation.set(-Math.PI/4, -Math.PI/3,Math.PI/200)
         fox.position.set(0,-1.5,0)
         fox.traverse((child) =>
         {
