@@ -37,12 +37,15 @@ window.addEventListener('resize', () =>
     sizes.height = window.innerHeight
     sizes.pixelRatio = Math.min(window.devicePixelRatio, 2)
 
-    // Update materials
-    material.uniforms.uResolution.value.set(sizes.width * sizes.pixelRatio, sizes.height * sizes.pixelRatio)
-
     // Update camera
     camera.aspect = sizes.width / sizes.height
     camera.updateProjectionMatrix()
+
+    if(fox)
+    {
+        setFoxScale(fox)
+        setFoxPosition(fox)
+    }
 
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
@@ -144,7 +147,19 @@ gui
 // Plane.rotateX(- Math.PI / 2)
 
 // scene.add(Plane)
+function setFoxScale(fox)
+{
+    const adjuster = screen.orientation.type.includes("portrait") ? 0.05 : 0.025
+    const maxwidth = 1920
+    const size = sizes.width * adjuster / maxwidth
+    fox.scale.set(size, size, size)
+}
 
+function setFoxPosition(fox)
+{
+    const y = screen.orientation.type.includes("portrait") ? -0.5 : -1.5
+    fox.position.set(0,y,0)
+}
 let fox = null
 let mixer = null
 gltfLoader.load(
@@ -152,9 +167,12 @@ gltfLoader.load(
     (gltf) =>
     {
         fox = gltf.scene
-        fox.scale.set(0.025, 0.025, 0.025)
+       
+        setFoxScale(fox)
+        setFoxPosition(fox)
+
         fox.rotation.set(-Math.PI/4, -Math.PI/3,Math.PI/200)
-        fox.position.set(0,-1.5,0)
+       
         fox.traverse((child) =>
         {
             if(child.isMesh)
