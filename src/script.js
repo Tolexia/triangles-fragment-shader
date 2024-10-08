@@ -61,9 +61,15 @@ camera.position.y = 5
 camera.position.z = 5
 scene.add(camera)
 
-// Controls
-const controls = new OrbitControls(camera, canvas)
-controls.enableDamping = true
+/**
+ * Rotation Controls
+ */
+const rotationControls = {
+    x: 0,
+    y: 0,
+    z: 0,
+    rotationSpeed: 0.01
+}
 
 /**
  * Renderer
@@ -135,6 +141,51 @@ gui
         material.uniforms.uColor_c.value.set(materialParameters.uColor_c)
     })
 
+const rotationFolder = gui.addFolder('Rotation Controls')
+
+rotationFolder
+    .add(rotationControls, 'x')
+    .min(-Math.PI)
+    .max(Math.PI)
+    .step(0.01)
+    .name('Rotation X')
+    .onChange(() => {
+        if (fox) {
+            fox.rotation.x = rotationControls.x
+        }
+    })
+
+rotationFolder
+    .add(rotationControls, 'y')
+    .min(-Math.PI)
+    .max(Math.PI)
+    .step(0.01)
+    .name('Rotation Y')
+    .onChange(() => {
+        if (fox) {
+            fox.rotation.y = rotationControls.y
+        }
+    })
+
+rotationFolder
+    .add(rotationControls, 'z')
+    .min(-Math.PI)
+    .max(Math.PI)
+    .step(0.01)
+    .name('Rotation Z')
+    .onChange(() => {
+        if (fox) {
+            fox.rotation.z = rotationControls.z
+        }
+    })
+
+rotationFolder
+    .add(rotationControls, 'rotationSpeed')
+    .min(0)
+    .max(0.1)
+    .step(0.001)
+    .name('Rotation Speed')
+
 
 /**
  * Objects
@@ -149,7 +200,7 @@ gui
 // scene.add(Plane)
 function setFoxScale(fox)
 {
-    const adjuster = screen.orientation.type.includes("portrait") ? 0.05 : 0.025
+    const adjuster = screen.orientation.type.includes("portrait") ? 0.05 : 0.02
     const maxwidth = 1920
     const size = sizes.width * adjuster / maxwidth
     fox.scale.set(size, size, size)
@@ -157,7 +208,7 @@ function setFoxScale(fox)
 
 function setFoxPosition(fox)
 {
-    const y = screen.orientation.type.includes("portrait") ? -0.5 : -1.5
+    const y = screen.orientation.type.includes("portrait") ? -0.5 : 4
     fox.position.set(0,y,0)
 }
 let fox = null
@@ -171,7 +222,7 @@ gltfLoader.load(
         setFoxScale(fox)
         setFoxPosition(fox)
 
-        fox.rotation.set(-Math.PI/4, -Math.PI/3,Math.PI/200)
+        fox.rotation.y = -1
        
         fox.traverse((child) =>
         {
@@ -235,8 +286,6 @@ const tick = () =>
 
     material.uniforms.iTime.value = elapsedTime
     material.uniforms.uColor_adjuster.value = Math.sin(elapsedTime * 0.35) * 0.5 + 0.5
-    // Update controls
-    controls.update()
 
     // Render
     renderer.render(scene, camera)
@@ -248,6 +297,9 @@ const tick = () =>
     if(fox)
     {
         initModel()
+        // rotationControls.x = fox.rotation.x
+        // rotationControls.y = fox.rotation.y
+        // rotationControls.z = fox.rotation.z
     }
     
 
