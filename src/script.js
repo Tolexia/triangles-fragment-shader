@@ -200,7 +200,7 @@ rotationFolder
 // scene.add(Plane)
 function setFoxScale(fox)
 {
-    const adjuster = screen.orientation.type.includes("portrait") ? 0.05 : 0.02
+    const adjuster = screen.orientation.type.includes("portrait") ? 0.04 : 0.02
     const maxwidth = 1920
     const size = sizes.width * adjuster / maxwidth
     fox.scale.set(size, size, size)
@@ -208,7 +208,7 @@ function setFoxScale(fox)
 
 function setFoxPosition(fox)
 {
-    const y = screen.orientation.type.includes("portrait") ? -0.5 : 4
+    const y = screen.orientation.type.includes("portrait") ? 4.5 : 4
     fox.position.set(0,y,0)
 }
 let fox = null
